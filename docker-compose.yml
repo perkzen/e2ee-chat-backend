@@ -1,17 +1,5 @@
 version: '3'
 services:
-#  api:
-#    build:
-#      dockerfile: Dockerfile
-#      context: .
-#    depends_on:
-#      - db
-#    environment:
-#      DATABASE_URL: postgres://admin:admin@postgres:5432/chatdb
-#      NODE_ENV: development
-#      PORT: 8080
-#    ports:
-#      - "8080:8080"
   db:
     image: postgres:13
     ports:
