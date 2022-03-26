@@ -9,7 +9,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
-    .setTitle('Expense Tracker API')
+    .setTitle('Chat API')
     .setVersion('1.0')
     .build();
 
