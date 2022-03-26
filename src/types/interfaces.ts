@@ -8,3 +8,9 @@ export interface IMessage {
   receiverId: string;
   text: string;
 }
+
+export interface ISocketUser {
+  id: string;
+  username: string;
+  socketId: string;
+}
