@@ -11,19 +11,19 @@ datasource db {
 }
 
 model User {
-    id              String      @id @default(uuid())
-    username        String
-    password        String
-    messages        Message[]
-    conversation    Conversation[]
+    id                  String          @id @default(uuid())
+    username            String
+    password            String
+    messages            Message[]
+    conversation        Conversation[]
 
     @@map("users")
 }
 
 model Conversation {
-    id          String      @id @default(uuid())
-    users       User[]
-    messages    Message[]
+    id                  String          @id @default(uuid())
+    users               User[]
+    messages            Message[]
 
     @@map("conversations")
 }
