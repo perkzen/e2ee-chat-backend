@@ -11,10 +11,31 @@ datasource db {
 }
 
 model User {
-    id          String      @id @default(uuid())
-    username    String
-    password    String
-
+    id              String      @id @default(uuid())
+    username        String
+    password        String
+    messages        Message[]
+    conversation    Conversation[]
 
     @@map("users")
+}
+
+model Conversation {
+    id          String      @id @default(uuid())
+    users       User[]
+    messages    Message[]
+
+    @@map("conversations")
+}
+
+model Message {
+     id                 String          @id @default(uuid())
+     text               String
+     time               DateTime        @default(now())
+     sender             User            @relation(fields:[senderId], references:[id])
+     senderId           String
+     conversation       Conversation    @relation(fields:[conversationId], references:[id])
+     conversationId     String
+
+     @@map("messages")
 }
