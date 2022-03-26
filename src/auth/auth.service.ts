@@ -52,6 +52,7 @@ export class AuthService {
         HttpStatus.PRECONDITION_FAILED,
       );
     }
+
     return {
       id: dbUser.id,
       username: dbUser.username,
