@@ -26,10 +26,12 @@ export class ChatGateway {
       socketId: client.id,
       username: user.username,
     });
+    this.server.emit('fetchUsers', this.users);
   }
 
   @SubscribeMessage('leave')
   handleLeave(@ConnectedSocket() client: Socket) {
     this.users = this.users.filter((user) => user.socketId !== client.id);
+    this.server.emit('fetchUsers', this.users);
   }
 }
