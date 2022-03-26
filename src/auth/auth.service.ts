@@ -29,7 +29,7 @@ export class AuthService {
     }
 
     return await this.db.user.create({
-      data: { ...user, password: hashedPassword },
+      data: { username: user.username, password: hashedPassword },
     });
   }
 
