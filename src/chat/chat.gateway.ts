@@ -14,6 +14,7 @@ export class ChatGateway {
   @WebSocketServer()
   private server: Server;
 
+  // use set instead
   users: ISocketUser[] = [];
 
   @SubscribeMessage('join')
