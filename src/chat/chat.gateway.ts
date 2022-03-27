@@ -53,7 +53,5 @@ export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
     if (user.id) {
       this.handleLogin(client, { username: user.username, id: user.id });
     }
-
-    this.server.emit('fetchUsers', this.users);
   }
 }
