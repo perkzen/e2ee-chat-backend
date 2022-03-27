@@ -5,7 +5,7 @@ export interface ILoginResponse {
 
 export interface IMessage {
   senderId: string;
-  receiverId: string;
+  receiver: IAuthUser;
   text: string;
 }
 

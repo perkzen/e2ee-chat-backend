@@ -16,12 +16,11 @@ export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
   @WebSocketServer()
   private server: Server;
 
-  connectedSockets: Set<string> = new Set<string>();
-  users: ISocketUser[] = [];
+  connectedSockets: Map<string, ISocketUser> = new Map<string, ISocketUser>();
 
   @SubscribeMessage('send_message')
   handleSendMessage(@MessageBody() message: IMessage) {
-    const receiver = this.users.find((user) => (user.id = message.receiverId));
+    const receiver = this.connectedSockets.get(message.receiver.username);
     this.server.to(receiver.socketId).emit('receive_message', message);
   }
 
@@ -30,31 +29,36 @@ export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
     @ConnectedSocket() client: Socket,
     @MessageBody() user: IAuthUser,
   ) {
-    if (this.connectedSockets.has(client.id)) {
-      this.users.push({
-        id: user.id,
-        socketId: client.id,
-        username: user.username,
-      });
-    }
-    this.server.emit('fetchUsers', this.users);
+    this.connectedSockets.set(user.username, {
+      socketId: client.id,
+      id: user.id,
+      username: user.username,
+    });
+    this.server.emit('fetchUsers', Array.from(this.connectedSockets.values()));
   }
 
   @SubscribeMessage('logout')
   handleLogout(@ConnectedSocket() client: Socket) {
-    this.users = this.users.filter((user) => user.socketId !== client.id);
-    this.server.emit('fetchUsers', this.users);
+    const user = client.handshake.auth as IAuthUser;
+    this.connectedSockets.delete(user.username);
+    this.server.emit('fetchUsers', Array.from(this.connectedSockets.values()));
   }
 
   handleDisconnect(@ConnectedSocket() client: Socket) {
-    this.users = this.users.filter((user) => user.socketId !== client.id);
-    this.connectedSockets.delete(client.id);
-    this.server.emit('fetchUsers', this.users);
+    const user = client.handshake.auth as IAuthUser;
+    this.connectedSockets.delete(user.username);
+    this.server.emit('fetchUsers', Array.from(this.connectedSockets.values()));
   }
 
   handleConnection(@ConnectedSocket() client: Socket) {
-    this.connectedSockets.add(client.id);
     const user = client.handshake.auth as IAuthUser;
+
+    if (user.username)
+      this.connectedSockets.set(user.username, {
+        socketId: client.id,
+        id: user.id,
+        username: user.username,
+      });
 
     if (user.id) {
       this.handleLogin(client, user);
