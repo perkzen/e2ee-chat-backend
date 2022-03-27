@@ -31,7 +31,6 @@ export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
         username: user.username,
       });
     }
-    console.log(this.users);
     this.server.emit('fetchUsers', this.users);
   }
 
