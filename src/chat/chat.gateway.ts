@@ -1,6 +1,8 @@
 import {
   ConnectedSocket,
   MessageBody,
+  OnGatewayConnection,
+  OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -10,29 +12,49 @@ import { Socket, Server } from 'socket.io';
 import { ISocketUser } from '../types/interfaces';
 
 @WebSocketGateway({ cors: { origin: '*' } })
-export class ChatGateway {
+export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
   @WebSocketServer()
   private server: Server;
 
-  // use set instead
+  connectedSockets: Set<string> = new Set<string>();
   users: ISocketUser[] = [];
 
-  @SubscribeMessage('join')
-  handleJoin(
+  @SubscribeMessage('login')
+  handleLogin(
     @ConnectedSocket() client: Socket,
     @MessageBody() user: { id: string; username: string },
   ) {
-    this.users.push({
-      id: user.id,
-      socketId: client.id,
-      username: user.username,
-    });
+    if (this.connectedSockets.has(client.id)) {
+      this.users.push({
+        id: user.id,
+        socketId: client.id,
+        username: user.username,
+      });
+    }
+    console.log(this.users);
     this.server.emit('fetchUsers', this.users);
   }
 
-  @SubscribeMessage('leave')
-  handleLeave(@ConnectedSocket() client: Socket) {
+  @SubscribeMessage('logout')
+  handleLogout(@ConnectedSocket() client: Socket) {
     this.users = this.users.filter((user) => user.socketId !== client.id);
+    this.server.emit('fetchUsers', this.users);
+  }
+
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    this.users = this.users.filter((user) => user.socketId !== client.id);
+    this.connectedSockets.delete(client.id);
+    this.server.emit('fetchUsers', this.users);
+  }
+
+  handleConnection(@ConnectedSocket() client: Socket) {
+    this.connectedSockets.add(client.id);
+    const user = client.handshake.auth as ISocketUser;
+
+    if (user.id) {
+      this.handleLogin(client, { username: user.username, id: user.id });
+    }
+
     this.server.emit('fetchUsers', this.users);
   }
 }

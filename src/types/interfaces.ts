@@ -10,7 +10,7 @@ export interface IMessage {
 }
 
 export interface ISocketUser {
-  id: string;
-  username: string;
+  id?: string;
+  username?: string;
   socketId: string;
 }
