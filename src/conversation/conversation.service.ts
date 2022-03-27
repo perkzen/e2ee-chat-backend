@@ -14,11 +14,12 @@ export class ConversationService {
     });
 
     if (!dbConversation) {
-      return await this.db.conversation.create({
+      const newConversation = await this.db.conversation.create({
         data: { users: [conversation.senderId, conversation.receiverId] },
       });
+      return newConversation.id;
     }
-    return dbConversation;
+    return dbConversation.id;
   }
 
   async getMessages(conversationId: string) {

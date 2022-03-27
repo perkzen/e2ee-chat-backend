@@ -9,7 +9,7 @@ import {
 } from '@nestjs/websockets';
 
 import { Socket, Server } from 'socket.io';
-import { ISocketUser } from '../types/interfaces';
+import { IAuthUser, IMessage, ISocketUser } from '../types/interfaces';
 
 @WebSocketGateway({ cors: { origin: '*' } })
 export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
@@ -19,10 +19,16 @@ export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
   connectedSockets: Set<string> = new Set<string>();
   users: ISocketUser[] = [];
 
+  @SubscribeMessage('send_message')
+  handleSendMessage(@MessageBody() message: IMessage) {
+    const receiver = this.users.find((user) => (user.id = message.receiverId));
+    this.server.to(receiver.socketId).emit('receive_message', message);
+  }
+
   @SubscribeMessage('login')
   handleLogin(
     @ConnectedSocket() client: Socket,
-    @MessageBody() user: { id: string; username: string },
+    @MessageBody() user: IAuthUser,
   ) {
     if (this.connectedSockets.has(client.id)) {
       this.users.push({
@@ -48,10 +54,10 @@ export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
 
   handleConnection(@ConnectedSocket() client: Socket) {
     this.connectedSockets.add(client.id);
-    const user = client.handshake.auth as ISocketUser;
+    const user = client.handshake.auth as IAuthUser;
 
     if (user.id) {
-      this.handleLogin(client, { username: user.username, id: user.id });
+      this.handleLogin(client, user);
     }
   }
 }

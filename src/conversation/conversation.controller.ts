@@ -1,11 +1,11 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ConversationService } from './conversation.service';
 import { ConversationDto } from './dto/conversation.dto';
-import { Conversation, Message } from '@prisma/client';
+import { Message } from '@prisma/client';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Chat')
-@Controller('conversation')
+@Controller('chat/conversation')
 export class ConversationController {
   constructor(private conversationService: ConversationService) {}
 
@@ -13,7 +13,7 @@ export class ConversationController {
   @Post()
   async startConversation(
     @Body() conversation: ConversationDto,
-  ): Promise<Conversation> {
+  ): Promise<string> {
     return await this.conversationService.create(conversation);
   }
 

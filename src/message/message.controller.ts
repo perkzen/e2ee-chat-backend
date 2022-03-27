@@ -5,7 +5,7 @@ import { MessageDto } from './dto/message.dto';
 import { Message } from '@prisma/client';
 
 @ApiTags('Chat')
-@Controller('message')
+@Controller('chat/message')
 export class MessageController {
   constructor(private messageService: MessageService) {}
 

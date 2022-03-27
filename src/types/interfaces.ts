@@ -14,3 +14,8 @@ export interface ISocketUser {
   username?: string;
   socketId: string;
 }
+
+export interface IAuthUser {
+  id: string;
+  username: string;
+}
