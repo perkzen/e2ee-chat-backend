@@ -24,7 +24,7 @@ Postgres DB
  ```bash
 $ docker-compose up
 $ prisma generate
-$ prisma db pull
+$ prisma db push
 ```
 
 ## Running the app
