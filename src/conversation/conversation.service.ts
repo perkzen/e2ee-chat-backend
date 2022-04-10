@@ -15,7 +15,10 @@ export class ConversationService {
 
     if (!dbConversation) {
       const newConversation = await this.db.conversation.create({
-        data: { users: [conversation.senderId, conversation.receiverId] },
+        data: {
+          users: [conversation.senderId, conversation.receiverId],
+          keyPair: conversation.keyPair,
+        },
       });
       return { id: newConversation.id, keyPair: newConversation.keyPair };
     }
