@@ -13,11 +13,11 @@ export interface ISocketUser {
   id?: string;
   username?: string;
   socketId: string;
-  publicKey: string;
+  key: string;
 }
 
 export interface IAuthUser {
   id: string;
   username: string;
-  publicKey: string;
+  key: string;
 }
