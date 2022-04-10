@@ -22,4 +22,10 @@ export class ConversationController {
   ): Promise<Message[]> {
     return await this.conversationService.getMessages(conversationId);
   }
+
+  @ApiOkResponse({ description: 'Returns all past conversations.' })
+  @Get('history/:userId')
+  async getConversationHistory(@Param('userId') userId: string) {
+    return await this.conversationService.getHistory(userId);
+  }
 }
