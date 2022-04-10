@@ -19,6 +19,7 @@ model User {
 model Conversation {
   id       String    @id @default(uuid())
   users    String[]
+  keyPair  String[]
   messages Message[]
 
   @@map("conversations")

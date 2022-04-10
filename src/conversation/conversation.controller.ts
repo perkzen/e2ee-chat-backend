@@ -11,9 +11,7 @@ export class ConversationController {
 
   @ApiOkResponse({ description: 'Conversation started successful.' })
   @Post()
-  async startConversation(
-    @Body() conversation: ConversationDto,
-  ): Promise<string> {
+  async startConversation(@Body() conversation: ConversationDto) {
     return await this.conversationService.create(conversation);
   }
 

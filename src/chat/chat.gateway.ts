@@ -33,6 +33,7 @@ export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
       socketId: client.id,
       id: user.id,
       username: user.username,
+      publicKey: user.publicKey,
     });
     this.server.emit('fetchUsers', Array.from(this.connectedSockets.values()));
   }
@@ -58,6 +59,7 @@ export class ChatGateway implements OnGatewayDisconnect, OnGatewayConnection {
         socketId: client.id,
         id: user.id,
         username: user.username,
+        publicKey: user.publicKey,
       });
 
     if (user.id) {
