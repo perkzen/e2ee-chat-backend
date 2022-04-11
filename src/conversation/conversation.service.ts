@@ -34,6 +34,12 @@ export class ConversationService {
     });
   }
 
+  async fetchUser(userId: string) {
+    return await this.db.user.findFirst({
+      where: { id: userId },
+    });
+  }
+
   async getHistory(userId: string) {
     const conversations: Conversation[] = await this.db.conversation.findMany({
       where: { users: { has: userId } },
@@ -41,8 +47,14 @@ export class ConversationService {
     const history = [];
     for (let i = 0; i < conversations.length; i++) {
       const messages = await this.getMessages(conversations[i].id);
+      const id =
+        userId === conversations[i].users[1]
+          ? conversations[i].users[1]
+          : conversations[i].users[0];
+      const user = this.fetchUser(id);
       history.push({
         ...conversations[i],
+        user: user,
         lastMessage: messages.slice(-1).pop(),
       });
     }
