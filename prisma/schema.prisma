@@ -8,19 +8,20 @@ datasource db {
 }
 
 model User {
-  id       String    @id @default(uuid())
-  username String
-  password String
-  messages Message[]
+  id        String    @id @default(uuid())
+  username  String
+  password  String
+  publicKey String
+  messages  Message[]
 
   @@map("users")
 }
 
 model Conversation {
-  id       String    @id @default(uuid())
-  users    String[]
-  keyPair  String[]
-  messages Message[]
+  id             String    @id @default(uuid())
+  users          String[]
+  computedSecret String
+  messages       Message[]
 
   @@map("conversations")
 }

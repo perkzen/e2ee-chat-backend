@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConversationDto } from './dto/conversation.dto';
+import { diffieHellman } from '../utils/crypto';
 import { Conversation } from '@prisma/client';
 
 @Injectable()
@@ -15,15 +16,22 @@ export class ConversationService {
     });
 
     if (!dbConversation) {
+      const secret = diffieHellman();
       const newConversation = await this.db.conversation.create({
         data: {
           users: [conversation.senderId, conversation.receiverId],
-          keyPair: conversation.keyPair,
+          computedSecret: secret,
         },
       });
-      return { id: newConversation.id, keyPair: newConversation.keyPair };
+      return {
+        id: newConversation.id,
+        computedSecret: newConversation.computedSecret,
+      };
     }
-    return { id: dbConversation.id, keyPair: dbConversation.keyPair };
+    return {
+      id: dbConversation.id,
+      computedSecret: dbConversation.computedSecret,
+    };
   }
 
   async getMessages(conversationId: string) {

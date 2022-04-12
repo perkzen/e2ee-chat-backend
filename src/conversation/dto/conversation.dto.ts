@@ -11,8 +11,4 @@ export class ConversationDto {
   @IsString()
   @IsNotEmpty()
   public receiverId: string;
-
-  @ApiProperty({ required: true })
-  @IsNotEmpty()
-  public keyPair: string[];
 }

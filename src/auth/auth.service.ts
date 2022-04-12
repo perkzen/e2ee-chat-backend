@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { RegisterDto } from './dto/register.dto';
 import { compareHash, hashData } from '../utils/hash';
 import { LoginDto } from './dto/login.dto';
+import { generatePublic } from '../utils/crypto';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +30,11 @@ export class AuthService {
     }
 
     return await this.db.user.create({
-      data: { username: user.username, password: hashedPassword },
+      data: {
+        username: user.username,
+        password: hashedPassword,
+        publicKey: generatePublic(),
+      },
     });
   }
 
