@@ -59,7 +59,7 @@ export class ConversationService {
         userId === conversations[i].users[1]
           ? conversations[i].users[1]
           : conversations[i].users[0];
-      const user = this.fetchUser(id);
+      const user = await this.fetchUser(id);
       history.push({
         ...conversations[i],
         user: user,
